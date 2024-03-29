@@ -11,7 +11,7 @@ public class TotalIncome {
     private int id;
 
     @Basic
-    @Column(name = "description", length = 70, nullable = false)
+    @Column(name = "description", length = 40, nullable = false)
     private String description;
 
     @Override
