@@ -165,17 +165,33 @@ public class CanadaCensusManager {
         System.out.println();
 
         // Question E
-        CriteriaQuery<Object[]> cqE = cb.createQuery(Object[].class);
-        Root<GeographicArea> rootE = cqE.from(GeographicArea.class);
-        cqE.multiselect(rootE.get("level"), cb.count(rootE)).groupBy(rootE.get("level"));
-        List<Object[]> resultsE = em.createQuery(cqE).getResultList();
+        // Display all the information of Geographic Area group by level
+        System.out.println("E. Display Geographic Area information Group by Level");
 
-        System.out.println("E. Use Group by Clause to Display Geographic Area Information group by Level:");
-        for (Object[] result : resultsE) {
-            System.out.print("Level: " + result[0]);
-            System.out.println("    Count: " + result[1]);
+        CriteriaQuery<Object[]> countQuery = cb.createQuery(Object[].class);
+        Root<GeographicArea> countRoot = countQuery.from(GeographicArea.class);
+        countQuery.multiselect(countRoot.get("level"), cb.count(countRoot))
+                .groupBy(countRoot.get("level"))
+                .orderBy(cb.asc(countRoot.get("level")));
+
+        List<Object[]> countResults = em.createQuery(countQuery).getResultList();
+        for (Object[] result : countResults) {
+            int level = (int) result[0];
+            long count = (long) result[1];
+            System.out.println("Level: " + level + "    Count: " + count);
+
+            CriteriaQuery<GeographicArea> detailQuery = cb.createQuery(GeographicArea.class);
+            Root<GeographicArea> detailRoot = detailQuery.from(GeographicArea.class);
+            detailQuery.select(detailRoot)
+                    .where(cb.equal(detailRoot.get("level"), level))
+                    .orderBy(cb.asc(detailRoot.get("code")));
+
+            List<GeographicArea> detailResults = em.createQuery(detailQuery).getResultList();
+            for (GeographicArea ga : detailResults) {
+                System.out.println("    Code: " + ga.getCode() + ", Name: " + ga.getName() + ", Alternative Code: " + ga.getAlternativeCode());
+            }
+            System.out.println();
         }
-        System.out.println();
     }
 
 }
