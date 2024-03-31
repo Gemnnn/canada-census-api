@@ -25,6 +25,24 @@ public class GeographicArea {
     @Column(name = "alternativeCode", nullable = false)
     private int alternativeCode;
 
+    // Constructor
+    public GeographicArea() {
+
+    }
+
+    public GeographicArea(int code, int level, String name) {
+        this.code = code;
+        this.level = level;
+        this.name = name;
+    }
+
+    public GeographicArea(int code, int level, String name, int alternativeCode) {
+        this.code = code;
+        this.level = level;
+        this.name = name;
+        this.alternativeCode = alternativeCode;
+    }
+
     public int getGeographicAreaID() {
         return geographicAreaID;
     }
