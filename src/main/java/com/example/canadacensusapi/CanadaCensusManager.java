@@ -165,19 +165,17 @@ public class CanadaCensusManager {
         System.out.println();
 
         // Question E
-        CriteriaQuery<GeographicArea> cqE = cb.createQuery(GeographicArea.class); // Create CriteriaQuery for question E
+        CriteriaQuery<Object[]> cqE = cb.createQuery(Object[].class);
         Root<GeographicArea> rootE = cqE.from(GeographicArea.class);
-        cqE.multiselect(rootE.get("geographicAreaID"), rootE.get("code"), rootE.get("level"), rootE.get("name"), rootE.get("alternativeCode")).groupBy(rootE.get("level"));
-        List<GeographicArea> resultsE = em.createQuery(cqE).getResultList();
+        cqE.multiselect(rootE.get("level"), cb.count(rootE)).groupBy(rootE.get("level"));
+        List<Object[]> resultsE = em.createQuery(cqE).getResultList();
 
         System.out.println("E. Use Group by Clause to Display Geographic Area Information group by Level:");
-        for (GeographicArea result : resultsE) {
-            System.out.print("GeographicAreaId: " + result.getGeographicAreaID());
-            System.out.print("  Code: " + result.getCode());
-            System.out.print("  Level: " + result.getLevel());
-            System.out.print("  Name: " + result.getName());
-            System.out.println("  AltCode: " + result.getAlternativeCode());
+        for (Object[] result : resultsE) {
+            System.out.print("Level: " + result[0]);
+            System.out.println("    Count: " + result[1]);
         }
+        System.out.println();
     }
 
 }
